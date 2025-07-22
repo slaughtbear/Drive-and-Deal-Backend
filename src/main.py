@@ -1,6 +1,7 @@
 from typing import Any
 from fastapi import FastAPI
 from src.routes.cars import cars
+from src.routes.customers import customers
 
 
 app = FastAPI()
@@ -15,4 +16,11 @@ app.include_router(
     router = cars,
     prefix = "/api/cars",
     tags = ["Cars"]
+)
+
+
+app.include_router(
+    router = customers,
+    prefix = "/api/customers",
+    tags = ["Customers"]
 )
