@@ -9,5 +9,5 @@ Aplicación backend desarrollada con FastAPI + MongoDB diseñada como un sistema
 - Autenticación segura (JWT) y manejo de roles.
 - Operaciones CRUD para vehículos, clientes, rentas y reparaciones.
 - Búsquedas avanzadas (filtros por estado, fechas, etc.).
--  Integración con MongoDB para alta flexibilidad en esquemas.
+-  Integración con MongoDB.
 - Documentación interactiva (Swagger).
