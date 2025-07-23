@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from src.routes.cars import cars
 from src.routes.customers import customers
 from src.routes.rentals import rentals
+from src.routes.repairs import repairs
 
 
 app = FastAPI(title="Drive and Deal Backend")
@@ -29,4 +30,11 @@ app.include_router(
     router = rentals,
     prefix = "/api/rentals",
     tags = ["Rentas"]
+)
+
+
+app.include_router(
+    router = repairs,
+    prefix = "/api/repairs",
+    tags = ["Reparaciones"]
 )
