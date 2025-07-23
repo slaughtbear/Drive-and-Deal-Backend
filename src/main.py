@@ -2,9 +2,10 @@ from typing import Any
 from fastapi import FastAPI
 from src.routes.cars import cars
 from src.routes.customers import customers
+from src.routes.rentals import rentals
 
 
-app = FastAPI()
+app = FastAPI(title="Drive and Deal Backend")
 
 
 @app.get("/")
@@ -15,12 +16,17 @@ def read_root() -> dict[str, Any]:
 app.include_router(
     router = cars,
     prefix = "/api/cars",
-    tags = ["Cars"]
+    tags = ["Autos"]
 )
-
 
 app.include_router(
     router = customers,
     prefix = "/api/customers",
-    tags = ["Customers"]
+    tags = ["Clientes"]
+)
+
+app.include_router(
+    router = rentals,
+    prefix = "/api/rentals",
+    tags = ["Rentas"]
 )
