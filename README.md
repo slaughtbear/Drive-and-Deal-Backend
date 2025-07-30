@@ -84,6 +84,7 @@ Crea un archivo `.env` en la raíz del proyecto con las siguientes variables:
 
 ```env
 MONGO_URI=mongodb://localhost:27017
+FRONTEND_URL = "http://localhost:5173"
 SECRET_KEY=clave_secreta_firma_jwt
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
