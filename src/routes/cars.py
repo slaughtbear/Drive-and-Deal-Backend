@@ -1,8 +1,18 @@
 from fastapi import APIRouter, HTTPException
-from src.database.queries.cars import delete_one_car, find_car, find_cars, insert_car, update_one_car
+from bson.errors import InvalidId
 from src.schemas.cars import Car, CarCreate, CarUpdate
-from bson.errors import InvalidId # excepción cuando un ID no es compatible con el de mongodb
+from src.database.queries.cars import (
+    find_cars,
+    find_car,
+    find_cars_by_filters,
+    insert_car,
+    update_one_car,
+    delete_one_car
+)
 
+""" RF02
+    El sistema debe permitir al Encargado de autos, registrar y mantener el registro de cada auto.
+"""
 
 cars = APIRouter()
 
@@ -41,6 +51,24 @@ async def get_car(id: str) -> Car:
             status_code = 400, # bad request
             detail = "El ID proporcionado no es válido."
         )
+    
+""" RF07
+    El sistema debe permitir al Empleado, la búsqueda de un vehículo disponible
+"""
+@cars.get("/filter/", response_model=list[Car])
+async def filter_cars(
+    avaible: bool | None = None
+) -> list[Car]:
+    """Endpoint para filtrar los autos que estén disponibles.
+    
+    Args:
+        avaible (bool | None): bool para filtrar si un auto está disponible (opcional)
+        
+    Returns:
+        list[Car]: Lista de autos que coinciden con el filtro
+    """
+    cars_list = await find_cars_by_filters(avaible)
+    return cars_list
 
 
 @cars.post("/", response_model=Car)
@@ -101,7 +129,7 @@ async def delete_car(id: str) -> dict[str, str]:
                 status_code = 404, # not found
                 detail = f"No se ha encontrado el auto con el ID {id} en la base de datos."
             )
-        return {"msg": "Auto eliminada correctamente."}
+        return {"msg": "Auto eliminado correctamente."}
     except InvalidId:
         raise HTTPException(
             status_code = 400, # bad request
