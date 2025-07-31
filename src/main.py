@@ -1,5 +1,10 @@
+import os
 from typing import Any
+from dotenv import load_dotenv
+
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 from src.routes.cars import cars
 from src.routes.customers import customers
 from src.routes.rentals import rentals
@@ -7,6 +12,18 @@ from src.routes.repairs import repairs
 
 
 app = FastAPI(title="Drive and Deal Backend")
+
+
+load_dotenv()
+FRONTEND_URL = os.getenv("FRONTEND_URL")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins = [FRONTEND_URL],
+    allow_credentials = True,
+    allow_methods = ["*"],
+    allow_headers = ["*"],
+)
 
 
 @app.get("/")
