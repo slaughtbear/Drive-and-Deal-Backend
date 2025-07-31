@@ -1,4 +1,5 @@
-from datetime import datetime
+from typing import Optional
+from datetime import date
 from pydantic import BaseModel, Field
 
 
@@ -7,7 +8,7 @@ class Repair(BaseModel):
     id_car: str
     description: str
     mount: float
-    date: datetime
+    registered_at: date
 
 
 class RepairCreate(BaseModel):
@@ -17,6 +18,5 @@ class RepairCreate(BaseModel):
 
 
 class RepairUpdate(BaseModel):
-    description: str | None = Field(default=None, min_length=5, max_length=100)
-    mount: float | None = Field(default=None, ge=0)
-    date: datetime | None = None
+    description: Optional[str] = Field(default=None, min_length=5, max_length=100)
+    mount: Optional[float] = Field(default=None, ge=0)
