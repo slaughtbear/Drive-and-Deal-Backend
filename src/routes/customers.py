@@ -1,8 +1,17 @@
 from fastapi import APIRouter, HTTPException
-from src.database.queries.customers import delete_one_customer, find_customer, find_customers, insert_customer, update_one_customer
+from bson.errors import InvalidId
 from src.schemas.customers import Customer, CustomerCreate, CustomerUpdate
-from bson.errors import InvalidId # excepción cuando un ID no es compatible con el de mongodb
+from src.database.queries.customers import (
+    find_customers,
+    find_customer,
+    insert_customer,
+    update_one_customer,
+    delete_one_customer
+)
 
+""" RF01
+    El sistema debe permitir al Empleado de atención al público, registrar y mantener los datos del cliente.
+"""
 
 customers = APIRouter()
 
@@ -44,7 +53,7 @@ async def get_customer(id: str) -> Customer:
 
 
 @customers.post("/", response_model=Customer)
-async def create_car(customer_data: CustomerCreate) -> Customer:
+async def create_customer(customer_data: CustomerCreate) -> Customer:
     """Endpoint de tipo POST para registrar un cliente.
 
     Args:
