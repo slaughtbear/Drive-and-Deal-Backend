@@ -92,7 +92,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 
 Asegúrate de tener MongoDB corriendo en tu máquina local o usar un URI de Atlas si estás usando una instancia en la nube.
 
-### 6. Ejecutar el servidor de Mongo
+### 5. Ejecutar el servidor de Mongo (sólo local)
 
 ```bash
 mongod
