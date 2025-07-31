@@ -7,10 +7,10 @@ class Rental(BaseModel):
     id: str
     id_customer: str
     id_car: str
-    start_date: datetime
-    end_date: datetime = None
+    start_date: datetime 
+    end_date: datetime = None 
     total_amount: float
-    returned: bool = False
+    returned: bool = False # RF09 El sistema debe permitir registrar las devoluciones de autos.
     return_status: str = None
 
 
