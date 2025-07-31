@@ -1,8 +1,18 @@
+from datetime import date
 from fastapi import APIRouter, HTTPException
-from src.database.queries.repairs import find_repair, find_repairs, insert_repair, update_one_repair
+from bson.errors import InvalidId 
 from src.schemas.repairs import Repair, RepairCreate, RepairUpdate
-from bson.errors import InvalidId # excepción cuando un ID no es compatible con el de mongodb
+from src.database.queries.repairs import (
+    find_repairs,
+    find_repair,
+    find_repairs_by_filters,
+    insert_repair,
+    update_one_repair
+)
 
+""" RF03	
+    El sistema debe permitir registrar las reparaciones de un auto (no se eliminan).
+"""
 
 repairs = APIRouter()
 
@@ -41,6 +51,26 @@ async def get_repair(id: str) -> Repair:
             status_code = 400, # bad request
             detail = "El ID proporcionado no es válido."
         )
+    
+""" RF04
+    El sistema debe permitir al Dueño obtener la información de reparaciones realizadas en un periodo de tiempo y por un monto determinado.
+"""
+@repairs.get("/filter/", response_model=list[Repair])
+async def filter_repairs(
+    registered_at: date | None = None, 
+    mount: float | None = None
+) -> list[Repair]:
+    """Endpoint para filtrar reparaciones por fecha de registro y/o monto.
+    
+    Args:
+        registered_at (date | None): Fecha de registro para filtrar (opcional)
+        mount (float | None): Monto para filtrar (opcional)
+        
+    Returns:
+        list[Repair]: Lista de reparaciones que coinciden con los filtros
+    """
+    repairs_list = await find_repairs_by_filters(registered_at, mount)
+    return repairs_list
 
 
 @repairs.post("/", response_model=Repair)
