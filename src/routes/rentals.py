@@ -1,20 +1,52 @@
+from datetime import date, timedelta
+from collections import Counter
+from bson.errors import InvalidId
 from fastapi import APIRouter, HTTPException
-from src.database.queries.rentals import delete_one_rental, find_rental, find_rentals, insert_rental, update_one_rental
 from src.schemas.rentals import Rental, RentalCreate, RentalUpdate
-from bson.errors import InvalidId # excepción cuando un ID no es compatible con el de mongodb
+from src.database.queries.rentals import (
+    find_rentals,
+    find_rental,
+    insert_rental,
+    update_one_rental,
+    # delete_one_rental
+)
 
+""" RF05
+    El sistema debe permitir registrar y actualizar la renta de un auto.
+"""
 
 rentals = APIRouter()
 
-
+""" RF06
+    El sistema debe permitir consultar autos más rentados en los últimos dos meses.
+"""
 @rentals.get("/", response_model=list[Rental])
-async def get_all_rentals() -> list[Rental]:
+async def get_all_rentals(filter_rental: bool = None) -> list[Rental]:
     """Endpoint de tipo GET para obtener una lista de rentas.
 
     Returns:
         rentals_list (list[Rental]): Lista de rentas.
     """
     rentals_list = await find_rentals()
+
+    if filter_rental:
+        two_months_ago = date.today() - timedelta(days=60)
+
+        # Filtrar rentas en los últimos 2 meses
+        recent_rentals = [
+            rental for rental in rentals_list
+            if rental["start_date"] >= two_months_ago
+        ]
+        
+        # Contar cuántas veces se rentó cada auto
+        car_ids = [rental["id_car"] for rental in recent_rentals]
+        car_count = Counter(car_ids)
+        
+        # Ordenar por cantidad de rentas (mayor a menor)
+        most_rented = car_count.most_common()
+        
+        return most_rented  # Lista de tuplas: (id_car, cantidad)
+    
     return rentals_list
 
 
@@ -84,26 +116,26 @@ async def update_rental(id: str, rental_data: RentalUpdate) -> Rental:
         )
 
 
-@rentals.delete("/{id}")
-async def delete_rental(id: str) -> dict[str, str]:
-    """Endpoint de tipo GET para eliminar una renta por ID.
+# @rentals.delete("/{id}")
+# async def delete_rental(id: str) -> dict[str, str]:
+#     """Endpoint de tipo GET para eliminar una renta por ID.
 
-    Args:
-        id (str): ID de la renta que se desea eliminar.
+#     Args:
+#         id (str): ID de la renta que se desea eliminar.
 
-    Returns:
-        dict[str, str]: Mensaje de respuesta al eliminar la renta.
-    """
-    try:
-        response = await delete_one_rental(id)
-        if not response:
-            raise HTTPException(
-                status_code = 404, # not found
-                detail = f"No se ha encontrado la renta con el ID {id} en la base de datos."
-            )
-        return {"msg": "renta eliminada correctamente."}
-    except InvalidId:
-        raise HTTPException(
-            status_code = 400, # bad request
-            detail = "El ID proporcionado no es válido."
-        )
+#     Returns:
+#         dict[str, str]: Mensaje de respuesta al eliminar la renta.
+#     """
+#     try:
+#         response = await delete_one_rental(id)
+#         if not response:
+#             raise HTTPException(
+#                 status_code = 404, # not found
+#                 detail = f"No se ha encontrado la renta con el ID {id} en la base de datos."
+#             )
+#         return {"msg": "renta eliminada correctamente."}
+#     except InvalidId:
+#         raise HTTPException(
+#             status_code = 400, # bad request
+#             detail = "El ID proporcionado no es válido."
+#         )
