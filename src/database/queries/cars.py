@@ -1,10 +1,10 @@
 from typing import Any # tipado de python
 from src.database.db import db # base de datos en mongodb
 from bson import ObjectId # clase para el id de mongodb 
-from src.database.mongo_serializers import serialize_doc, serialize_docs # serializadores
+from src.database.mongo_serializers import serialize_doc, serialize_docs
 
 
-cars = db.cars # colección para almacenar tareas
+cars = db.cars # colección para almacenar autos
 
 
 async def find_car(id: str) -> dict[str, Any]:
@@ -36,6 +36,31 @@ async def find_cars() -> list[dict[str, Any]]:
     async for document in cursor:
         cars_list.append(document) # se agregan los autos a la lista
     return serialize_docs(cars_list) # se retorna la lista con las autos ya serializadas
+
+
+async def find_cars_by_filters(
+    is_avaible: bool | None = None, 
+) -> list[dict[str, Any]]:
+    """Función para obtener los autos que estén disponibles o no.
+    
+    Args:
+        is_avaible (bool | None): bool que indica si el auto está disponible (opcional)
+        
+    Returns:
+        list[dict[str, Any]]: Lista de autos que coinciden con los filtros
+    """
+    query = {} # diccionario para almacenar queries
+    
+    # if is_avaible is not None: # si se proporciona una fecha
+    #     query["registered_at"] = is_avaible
+
+    query["avaible"] = is_avaible
+    repairs_list = [] # lista para almacenar las reparaciones
+    cursor = cars.find(query) # se ejecuta el query a la base de datos
+    
+    async for document in cursor: # se recorre el cursor con los documentos filtrados
+        repairs_list.append(document) # se agrega el documento a la lista
+    return serialize_docs(repairs_list) # se serializa la lista de documentos su ID a str
 
 
 async def insert_car(car_data: dict[str, Any]) -> dict[str, Any]:
