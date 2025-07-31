@@ -1,4 +1,4 @@
-# Drive and Deal Backend 🚗
+# Drive and Deal Backend 🐍
 
 Backend desarrollado con **FastAPI** y **MongoDB** para un sistema de renta y reparación de autos. La aplicación gestiona múltiples roles, operaciones CRUD y autenticación segura mediante JWT.
 
