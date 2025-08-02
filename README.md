@@ -1,4 +1,4 @@
-# Drive and Deal Backend 🚗
+# Drive and Deal Backend 🐍
 
 Backend desarrollado con **FastAPI** y **MongoDB** para un sistema de renta y reparación de autos. La aplicación gestiona múltiples roles, operaciones CRUD y autenticación segura mediante JWT.
 
@@ -92,7 +92,13 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 
 Asegúrate de tener MongoDB corriendo en tu máquina local o usar un URI de Atlas si estás usando una instancia en la nube.
 
-### 5. Ejecutar el servidor
+### 5. Ejecutar el servidor de Mongo (sólo local)
+
+```bash
+mongod
+```
+
+### 6. Ejecutar el servidor de FastAPI
 
 ```bash
 fastapi dev src/main.py
