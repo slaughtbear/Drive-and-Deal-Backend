@@ -23,7 +23,7 @@ class CarCreate(BaseModel):
         example="Skyline GT-R (R35)"
     )
     year: int = Field(
-        ge=1990,
+        ge=1900,
         le=2025,
         example=2007
     )
