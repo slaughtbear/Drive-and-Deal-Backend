@@ -28,6 +28,12 @@ app.add_middleware(
 )
 
 
+app.include_router(
+    router = auth,
+    prefix = "/api/auth",
+    tags = ["Autenticación"]
+)
+
 @app.get("/")
 def read_root() -> dict[str, Any]:
     return {'msg': 'welcome to drive and deal backend'}
@@ -56,13 +62,6 @@ app.include_router(
     router = repairs,
     prefix = "/api/repairs",
     tags = ["Reparaciones"]
-)
-
-
-app.include_router(
-    router = auth,
-    prefix = "/api/auth",
-    tags = ["Autenticación"]
 )
 
 
