@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from src.schemas.tokens import Token
-from src.security.dependencies import authenticate_user, check_owner
+from src.security.dependencies import authenticate_user
 from src.security.security import create_access_token
 
 
