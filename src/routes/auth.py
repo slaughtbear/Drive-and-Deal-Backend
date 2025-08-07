@@ -3,9 +3,11 @@ import os
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
+from src.database.queries.users import find_user
 from src.schemas.tokens import Token
+from src.schemas.users import User
 from src.security.dependencies import authenticate_user
-from src.security.security import create_access_token
+from src.security.security import create_access_token, decode_token
 
 
 auth = APIRouter()
@@ -32,6 +34,31 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         "token_type": "bearer"
     }
 
+
+@auth.get("/verify-token/{token}", response_model=User)
+async def verify_token(token: str):
+    try:
+        payload = decode_token(token)
+        username: str = payload.get("sub")
+        if username is None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token inválido",
+            )
+
+        user = await find_user(username)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Usuario no encontrado",
+            )
+
+        return user  # O simplemente return {"msg": "Token válido"}
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token inválido o expirado",
+        )
 
 # @auth.get("/owner/")
 # async def owner_route(current_user = Depends(check_owner)):
